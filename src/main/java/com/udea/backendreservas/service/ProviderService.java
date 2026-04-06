@@ -1,4 +1,8 @@
 package com.udea.backendreservas.service;
 
-public class ProviderService {
+import com.udea.backendreservas.dto.request.CreateProviderRequestDTO;
+import com.udea.backendreservas.dto.response.ProviderResponseDTO;
+
+public interface ProviderService {
+    ProviderResponseDTO createProvider(CreateProviderRequestDTO request);
 }

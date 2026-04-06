@@ -1,4 +1,8 @@
 package com.udea.backendreservas.service;
 
-public class ClientService {
+import com.udea.backendreservas.dto.request.CreateClientRequestDTO;
+import com.udea.backendreservas.dto.response.ClientResponseDTO;
+
+public interface ClientService {
+    ClientResponseDTO createClient(CreateClientRequestDTO request);
 }

@@ -55,27 +55,21 @@ git clone https://github.com/Isa-Bedoya-UdeA/backend-reservas.git
 cd backend-reservas
 ```
 
-### 2. Configurar la Base de Datos
+### 2. Configurar la Base de Datos y Propiedades
 
-Crea una base de datos en Oracle o PostgreSQL y actualiza el archivo `src/main/resources/application-dev.properties` con tus credenciales:
+El proyecto maneja tres perfiles de entorno a través de archivos `.properties`:
+- `application.properties`: Configuraciones globales (e.g., JWT secret) y define qué perfil está activo (actualmente `dev`).
+- `application-dev.properties`: Entorno de desarrollo local. Contiene credenciales específicas para PostgreSQL local y permite la creación automática de tablas mediante Hibernate (`spring.jpa.hibernate.ddl-auto=update`).
+- `application-prod.properties`: Entorno de producción. Su configuración está preparada para inyectar variables de entorno (e.g., `${DB_URL}`).
 
-```properties
-# Oracle
-spring.datasource.url=jdbc:oracle:thin:@localhost:1521:XE
-spring.datasource.username=tu_usuario
-spring.datasource.password=tu_password
-spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+**Pasos para crear la Base de Datos en pgAdmin (Local):**
+1. **Abrir pgAdmin y conectar al servidor:** Inicia pgAdmin y despliega el servidor local al que te vas a conectar (normalmente en el puerto `5432`). Introduce tu contraseña de `postgres` si te lo solicita.
+2. **Crear la Base de Datos:**
+   - Haz clic derecho sobre el apartado `Databases` > `Create` > `Database...`
+   - En la pestaña `General`, asigna el nombre a tu base de datos: `db_reservas`.
+   - Haz clic en `Save`.
 
-# PostgreSQL (alternativa)
-# spring.datasource.url=jdbc:postgresql://localhost:5432/reservas_db
-# spring.datasource.username=tu_usuario
-# spring.datasource.password=tu_password
-# spring.datasource.driver-class-name=org.postgresql.Driver
-
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.OracleDialect
-```
+*Nota: Una vez la base de datos esté creada y en blanco, Spring Boot y JPA (Hibernate) se encargarán automáticamente de crear el esquema relacional (`usuario`, `cliente`, `proveedor`, etc.) de acuerdo a las entidades de Java configuradas.*
 
 ### 3. Configurar JWT
 
@@ -117,15 +111,93 @@ backend-reservas/
 │   │   │   ├── exception/           # Manejo de excepciones
 │   │   │   └── security/            # Filtros y utilidades JWT
 │   │   └── resources/
-│   │       ├── application.properties
-│   │       └── application-dev.properties
+│   │       ├── application.properties         # Configuración global y perfil activo
+│   │       ├── application-dev.properties     # Config. BD y JPA local (Hibernate update)
+│   │       └── application-prod.properties    # Config. Producción con variables de entorno
 │   └── test/                        # Pruebas unitarias e integración
 ├── pom.xml
 └── README.md
 ```
 
-## Endpoints (Próximamente)
+## Endpoints Principales
 
+Autenticación y Registro:
+- `POST /api/auth/register/client`: Registro de Usuarios tipo Cliente
+- `POST /api/auth/register/provider`: Registro de Usuarios tipo Proveedor
+
+----
+
+## Pruebas en Postman
+
+Al arrancar la aplicación en local (`http://localhost:8080`), puedes probar los siguientes flujos para la creación de cuentas de clientes y proveedores utilizando validaciones exhaustivas.
+
+> Importante: El `Content-Type` de las peticiones debe ser `application/json`. 
+
+### Pruebas de Cliente (CLIENTE)
+
+**✅ Caso 1: Petición Válida (Crear Cliente Exitoso)**
+- **Método**: `POST`
+- **URL**: `http://localhost:8080/api/auth/register/client`
+- **Body**:
+```json
+{
+    "email": "juan.cliente@udea.edu.co",
+    "password": "Password123",
+    "nombre": "Juan Pérez",
+    "telefono": "3001234567"
+}
+```
+**Resultado Esperado:**
+Recibirás un HTTP Status `201 CREATED`. El aplicativo registrará el usuario y la contraseña será encriptada mediante BCrypt. El endpoint devolverá el perfil creado con un JSON Web Token (JWT) válido para iniciar sesión.
+
+**❌ Caso 2: Petición Inválida (Probar Validaciones)**
+- **Método**: `POST`
+- **URL**: `http://localhost:8080/api/auth/register/client`
+- **Body**:
+```json
+{
+    "email": "correo_invalido",
+    "password": "pass", 
+    "nombre": "",
+    "telefono": "300 abc de" 
+}
+```
+**Resultado Esperado:** 
+HTTP Status `400 Bad Request`. Gracias a nuestro `GlobalExceptionHandler`, verás un objeto JSON destilando individualmente los errores debido a expresiones regulares: contraseña sin 8 letras o números y teléfono con alfabetos en lugar de números planos.
+
+### Pruebas de Proveedor (PROVEEDOR)
+
+**✅ Caso 3: Petición Válida (Crear Proveedor Exitoso)**
+- **Método**: `POST`
+- **URL**: `http://localhost:8080/api/auth/register/provider`
+- **Body**:
+```json
+{
+    "email": "contacto@esteticabelleza.com",
+    "password": "Password123",
+    "nombreComercial": "Estética Belleza Natural",
+    "direccion": "Calle 123 #45-67, Medellín",
+    "telefonoContacto": "3119876543"
+}
+```
+**Resultado Esperado:** 
+HTTP Status `201 CREATED`. Con su respectivo Token autorizando el rol exclusivo de Proveedor, y mapeándole la relación de persistencia a la tabla `proveedor` en PostgreSQL.
+
+**❌ Caso 4: Petición Inválida (Probar Validaciones y Duplicidad)**
+- **Método**: `POST`
+- **URL**: `http://localhost:8080/api/auth/register/provider`
+- **Body**:
+```json
+{
+    "email": "contacto@esteticabelleza.com",
+    "password": "SinNumerosYMayusculas",
+    "nombreComercial": " ",
+    "direccion": "Centro",
+    "telefonoContacto": "+57 321"
+}
+```
+**Resultado Esperado:** 
+Nuevamente generará HTTP Status `400 Bad Request` señalando todos los campos incorrectos. Adicional a esto, si utilizas exactamente el mismo correo con el que corriste la prueba válida previa, saltará un control de base de datos alertando que `"error": "El correo electrónico ya está en uso"`.
 
 ## Licencia
 
