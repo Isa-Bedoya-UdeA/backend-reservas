@@ -99,6 +99,9 @@ mvn spring-boot:run
 
 # Opción 2:
 mvn clean spring-boot:run
+
+# Si falla al ejecutar, lanzar este comando, y luego nuevamente run
+taskkill /F /IM java.exe 2>$null
 ```
 
 La aplicación estará disponible en: `http://localhost:8080`
