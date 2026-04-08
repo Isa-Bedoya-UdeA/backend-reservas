@@ -3,16 +3,34 @@ package com.udea.backendreservas.mapper;
 import com.udea.backendreservas.dto.request.CreateClientRequestDTO;
 import com.udea.backendreservas.dto.response.ClientResponseDTO;
 import com.udea.backendreservas.entity.Client;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.springframework.stereotype.Component;
+import com.udea.backendreservas.entity.User;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface ClientMapper {
+@Component
+public class ClientMapper {
     
-    @Mapping(target = "passwordHash", ignore = true)
-    @Mapping(target = "tipoUsuario", constant = "CLIENTE")
-    Client toEntity(CreateClientRequestDTO dto);
+    public Client toEntity(CreateClientRequestDTO dto) {
+        if (dto == null) return null;
+        Client client = new Client();
+        client.setEmail(dto.getEmail());
+        client.setNombre(dto.getNombre());
+        client.setTelefono(dto.getTelefono());
+        client.setTipoUsuario(User.Role.CLIENTE);
+        return client;
+    }
 
-    ClientResponseDTO toDto(Client entity);
+    public ClientResponseDTO toDto(Client entity) {
+        if (entity == null) return null;
+        ClientResponseDTO dto = new ClientResponseDTO();
+        dto.setIdUsuario(entity.getIdUsuario());
+        dto.setEmail(entity.getEmail());
+        if (entity.getTipoUsuario() != null) {
+            dto.setTipoUsuario(entity.getTipoUsuario().name());
+        }
+        dto.setEstado(entity.getEstado());
+        dto.setFechaRegistro(entity.getFechaRegistro());
+        dto.setNombre(entity.getNombre());
+        dto.setTelefono(entity.getTelefono());
+        return dto;
+    }
 }

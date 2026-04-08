@@ -94,7 +94,11 @@ mvn clean install -U -DskipTests
 ### 5. Ejecutar la Aplicación
 
 ```bash
+# Opción 1:
 mvn spring-boot:run
+
+# Opción 2:
+mvn clean spring-boot:run
 ```
 
 La aplicación estará disponible en: `http://localhost:8080`

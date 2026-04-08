@@ -3,16 +3,36 @@ package com.udea.backendreservas.mapper;
 import com.udea.backendreservas.dto.request.CreateProviderRequestDTO;
 import com.udea.backendreservas.dto.response.ProviderResponseDTO;
 import com.udea.backendreservas.entity.Provider;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.springframework.stereotype.Component;
+import com.udea.backendreservas.entity.User;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface ProviderMapper {
+@Component
+public class ProviderMapper {
 
-    @Mapping(target = "passwordHash", ignore = true)
-    @Mapping(target = "tipoUsuario", constant = "PROVEEDOR")
-    Provider toEntity(CreateProviderRequestDTO dto);
+    public Provider toEntity(CreateProviderRequestDTO dto) {
+        if (dto == null) return null;
+        Provider provider = new Provider();
+        provider.setEmail(dto.getEmail());
+        provider.setNombreComercial(dto.getNombreComercial());
+        provider.setDireccion(dto.getDireccion());
+        provider.setTelefonoContacto(dto.getTelefonoContacto());
+        provider.setTipoUsuario(User.Role.PROVEEDOR);
+        return provider;
+    }
 
-    ProviderResponseDTO toDto(Provider entity);
+    public ProviderResponseDTO toDto(Provider entity) {
+        if (entity == null) return null;
+        ProviderResponseDTO dto = new ProviderResponseDTO();
+        dto.setIdUsuario(entity.getIdUsuario());
+        dto.setEmail(entity.getEmail());
+        if (entity.getTipoUsuario() != null) {
+            dto.setTipoUsuario(entity.getTipoUsuario().name());
+        }
+        dto.setEstado(entity.getEstado());
+        dto.setFechaRegistro(entity.getFechaRegistro());
+        dto.setNombreComercial(entity.getNombreComercial());
+        dto.setDireccion(entity.getDireccion());
+        dto.setTelefonoContacto(entity.getTelefonoContacto());
+        return dto;
+    }
 }

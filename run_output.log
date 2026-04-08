@@ -1,0 +1,92 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.udea:backend-reservas >----------------------
+[INFO] Building backend-reservas 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.3.2:clean (default-clean) @ backend-reservas ---
+[INFO] Deleting C:\SharedFolders\Personal Account\UdeA\S7\FabricaEscuela\project-reservas\backend-reservas\target
+[INFO] 
+[INFO] >>> spring-boot:3.2.4:run (default-cli) > test-compile @ backend-reservas >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ backend-reservas ---
+[INFO] Copying 3 resources from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ backend-reservas ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 84 source files with javac [debug release 17] to target\classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ backend-reservas ---
+[INFO] skip non existing resourceDirectory C:\SharedFolders\Personal Account\UdeA\S7\FabricaEscuela\project-reservas\backend-reservas\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ backend-reservas ---
+[INFO] Changes detected - recompiling the module! :dependency
+[INFO] Compiling 1 source file with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] <<< spring-boot:3.2.4:run (default-cli) < test-compile @ backend-reservas <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:3.2.4:run (default-cli) @ backend-reservas ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.4)
+
+2026-04-07T20:11:57.808-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] c.u.b.BackendReservasApplication         : Starting BackendReservasApplication using Java 17.0.18 with PID 47504 (C:\SharedFolders\Personal Account\UdeA\S7\FabricaEscuela\project-reservas\backend-reservas\target\classes started by User in C:\SharedFolders\Personal Account\UdeA\S7\FabricaEscuela\project-reservas\backend-reservas)
+2026-04-07T20:11:57.810-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] c.u.b.BackendReservasApplication         : The following 1 profile is active: "dev"
+2026-04-07T20:11:57.839-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.s.b.devtools.restart.ChangeableUrls    : The Class-Path manifest attribute in C:\Users\User\.m2\repository\com\oracle\database\jdbc\ojdbc11\21.9.0.0\ojdbc11-21.9.0.0.jar referenced one or more files that do not exist: file:/C:/Users/User/.m2/repository/com/oracle/database/jdbc/ojdbc11/21.9.0.0/oraclepki.jar
+2026-04-07T20:11:57.839-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-07T20:11:57.839-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-07T20:11:58.254-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-07T20:11:58.313-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 54 ms. Found 3 JPA repository interfaces.
+2026-04-07T20:11:58.739-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-07T20:11:58.748-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-07T20:11:58.748-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-04-07T20:11:58.790-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-04-07T20:11:58.790-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 951 ms
+2026-04-07T20:11:58.889-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-07T20:11:58.926-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.4.4.Final
+2026-04-07T20:11:58.947-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-04-07T20:11:59.102-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-07T20:11:59.122-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-07T20:11:59.297-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7613419d
+2026-04-07T20:11:59.298-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-07T20:11:59.320-05:00  WARN 47504 --- [backend-reservas] [  restartedMain] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-07T20:11:59.987-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-07T20:12:00.048-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-07T20:12:00.280-05:00  WARN 47504 --- [backend-reservas] [  restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'authController' defined in file [C:\SharedFolders\Personal Account\UdeA\S7\FabricaEscuela\project-reservas\backend-reservas\target\classes\com\udea\backendreservas\controller\AuthController.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'authServiceImpl' defined in file [C:\SharedFolders\Personal Account\UdeA\S7\FabricaEscuela\project-reservas\backend-reservas\target\classes\com\udea\backendreservas\service\impl\AuthServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'clientServiceImpl' defined in file [C:\SharedFolders\Personal Account\UdeA\S7\FabricaEscuela\project-reservas\backend-reservas\target\classes\com\udea\backendreservas\service\impl\ClientServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 2: No qualifying bean of type 'com.udea.backendreservas.mapper.ClientMapper' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
+2026-04-07T20:12:00.281-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-07T20:12:00.283-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-04-07T20:12:00.286-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-04-07T20:12:00.289-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-04-07T20:12:00.296-05:00  INFO 47504 --- [backend-reservas] [  restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-04-07T20:12:00.312-05:00 ERROR 47504 --- [backend-reservas] [  restartedMain] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 2 of constructor in com.udea.backendreservas.service.impl.ClientServiceImpl required a bean of type 'com.udea.backendreservas.mapper.ClientMapper' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.udea.backendreservas.mapper.ClientMapper' in your configuration.
+
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.261 s
+[INFO] Finished at: 2026-04-07T20:12:00-05:00
+[INFO] ------------------------------------------------------------------------
