@@ -18,6 +18,7 @@ Este proyecto corresponde al **Caso 15** del handbook de casos de Fabrica Escuel
 ## Tecnologías
 
 ### Backend
+
 - **Java 17**
 - **Spring Boot 3.2.4**
 - **Spring Security** (Autenticación y autorización)
@@ -28,10 +29,12 @@ Este proyecto corresponde al **Caso 15** del handbook de casos de Fabrica Escuel
 - **Maven** (Gestión de dependencias)
 
 ### Base de Datos
+
 - **Oracle Database 21c** (Producción)
 - **PostgreSQL** (Desarrollo/Pruebas)
 
 ### Herramientas de Desarrollo
+
 - **Git** (Control de versiones)
 - **GitHub** (Repositorio remoto)
 - **Postman** (Pruebas de APIs)
@@ -58,11 +61,13 @@ cd backend-reservas
 ### 2. Configurar la Base de Datos y Propiedades
 
 El proyecto maneja tres perfiles de entorno a través de archivos `.properties`:
+
 - `application.properties`: Configuraciones globales (e.g., JWT secret) y define qué perfil está activo (actualmente `dev`).
 - `application-dev.properties`: Entorno de desarrollo local. Contiene credenciales específicas para PostgreSQL local y permite la creación automática de tablas mediante Hibernate (`spring.jpa.hibernate.ddl-auto=update`).
 - `application-prod.properties`: Entorno de producción. Su configuración está preparada para inyectar variables de entorno (e.g., `${DB_URL}`).
 
 **Pasos para crear la Base de Datos en pgAdmin (Local):**
+
 1. **Abrir pgAdmin y conectar al servidor:** Inicia pgAdmin y despliega el servidor local al que te vas a conectar (normalmente en el puerto `5432`). Introduce tu contraseña de `postgres` si te lo solicita.
 2. **Crear la Base de Datos:**
    - Haz clic derecho sobre el apartado `Databases` > `Create` > `Database...`
@@ -83,7 +88,7 @@ jwt.expiration=86400000
 ### 4. Compilar el Proyecto
 
 ```bash
-mvn clean install
+mvn clean install -U -DskipTests 
 ```
 
 ### 5. Ejecutar la Aplicación
@@ -96,7 +101,7 @@ La aplicación estará disponible en: `http://localhost:8080`
 
 ## Estructura del Proyecto
 
-```
+```plain text
 backend-reservas/
 ├── src/
 │   ├── main/
@@ -122,6 +127,7 @@ backend-reservas/
 ## Endpoints Principales
 
 Autenticación y Registro:
+
 - `POST /api/auth/register/client`: Registro de Usuarios tipo Cliente
 - `POST /api/auth/register/provider`: Registro de Usuarios tipo Proveedor
 
@@ -131,14 +137,16 @@ Autenticación y Registro:
 
 Al arrancar la aplicación en local (`http://localhost:8080`), puedes probar los siguientes flujos para la creación de cuentas de clientes y proveedores utilizando validaciones exhaustivas.
 
-> Importante: El `Content-Type` de las peticiones debe ser `application/json`. 
+> Importante: El `Content-Type` de las peticiones debe ser `application/json`.
 
 ### Pruebas de Cliente (CLIENTE)
 
-**✅ Caso 1: Petición Válida (Crear Cliente Exitoso)**
+**✅ Caso 1: Petición Válida** (Crear Cliente Exitoso)
+
 - **Método**: `POST`
 - **URL**: `http://localhost:8080/api/auth/register/client`
 - **Body**:
+
 ```json
 {
     "email": "juan.cliente@udea.edu.co",
@@ -147,13 +155,16 @@ Al arrancar la aplicación en local (`http://localhost:8080`), puedes probar los
     "telefono": "3001234567"
 }
 ```
+
 **Resultado Esperado:**
 Recibirás un HTTP Status `201 CREATED`. El aplicativo registrará el usuario y la contraseña será encriptada mediante BCrypt. El endpoint devolverá el perfil creado con un JSON Web Token (JWT) válido para iniciar sesión.
 
-**❌ Caso 2: Petición Inválida (Probar Validaciones)**
+**❌ Caso 2: Petición Inválida** (Probar Validaciones)
+
 - **Método**: `POST`
 - **URL**: `http://localhost:8080/api/auth/register/client`
 - **Body**:
+
 ```json
 {
     "email": "correo_invalido",
@@ -162,15 +173,19 @@ Recibirás un HTTP Status `201 CREATED`. El aplicativo registrará el usuario y 
     "telefono": "300 abc de" 
 }
 ```
-**Resultado Esperado:** 
+
+**Resultado Esperado:**
+
 HTTP Status `400 Bad Request`. Gracias a nuestro `GlobalExceptionHandler`, verás un objeto JSON destilando individualmente los errores debido a expresiones regulares: contraseña sin 8 letras o números y teléfono con alfabetos en lugar de números planos.
 
 ### Pruebas de Proveedor (PROVEEDOR)
 
-**✅ Caso 3: Petición Válida (Crear Proveedor Exitoso)**
+**✅ Caso 3: Petición Válida** (Crear Proveedor Exitoso)
+
 - **Método**: `POST`
 - **URL**: `http://localhost:8080/api/auth/register/provider`
 - **Body**:
+
 ```json
 {
     "email": "contacto@esteticabelleza.com",
@@ -180,13 +195,17 @@ HTTP Status `400 Bad Request`. Gracias a nuestro `GlobalExceptionHandler`, verá
     "telefonoContacto": "3119876543"
 }
 ```
-**Resultado Esperado:** 
+
+**Resultado Esperado:**
+
 HTTP Status `201 CREATED`. Con su respectivo Token autorizando el rol exclusivo de Proveedor, y mapeándole la relación de persistencia a la tabla `proveedor` en PostgreSQL.
 
-**❌ Caso 4: Petición Inválida (Probar Validaciones y Duplicidad)**
+**❌ Caso 4: Petición Inválida** (Probar Validaciones y Duplicidad)
+
 - **Método**: `POST`
 - **URL**: `http://localhost:8080/api/auth/register/provider`
 - **Body**:
+
 ```json
 {
     "email": "contacto@esteticabelleza.com",
@@ -196,7 +215,9 @@ HTTP Status `201 CREATED`. Con su respectivo Token autorizando el rol exclusivo 
     "telefonoContacto": "+57 321"
 }
 ```
-**Resultado Esperado:** 
+
+**Resultado Esperado:**
+
 Nuevamente generará HTTP Status `400 Bad Request` señalando todos los campos incorrectos. Adicional a esto, si utilizas exactamente el mismo correo con el que corriste la prueba válida previa, saltará un control de base de datos alertando que `"error": "El correo electrónico ya está en uso"`.
 
 ## Licencia
