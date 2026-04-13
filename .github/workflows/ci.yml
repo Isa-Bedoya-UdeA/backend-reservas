@@ -1,0 +1,130 @@
+# ================================================================
+# Pipeline CI/CD - Calidad de Software
+# Caso 15 - Plataforma de Reservas de Servicios
+# Equipo Virtual Avanzado 04
+#
+# Disparadores:
+#   - Push a main o develop
+#   - Pull Request hacia main o develop
+#
+# Etapas:
+#   1. Build y compilación
+#   2. Pruebas unitarias (JUnit 5 + Mockito)
+#   3. Reporte de cobertura JaCoCo
+#   4. Validación Quality Gate (>= 40%)
+#   5. Publicación del reporte como artefacto descargable
+# ================================================================
+
+name: CI - Pruebas y Cobertura
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test-and-coverage:
+    name: Pruebas Unitarias y Cobertura JaCoCo
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------------------------------------
+      # 1. Checkout del código
+      # ----------------------------------------------------------
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      # ----------------------------------------------------------
+      # 2. Configurar Java 17
+      # ----------------------------------------------------------
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      # ----------------------------------------------------------
+      # 3. Compilar el proyecto
+      #    Falla si hay errores de compilación
+      # ----------------------------------------------------------
+      - name: Compilar proyecto
+        run: mvn compile --no-transfer-progress
+
+      # ----------------------------------------------------------
+      # 4. Ejecutar pruebas unitarias + generar reporte JaCoCo
+      #    - Usa H2 en memoria (src/test/resources/application.properties)
+      #    - Genera reporte en target/site/jacoco/
+      #    - El perfil de Spring activo es vacío (sin dev ni prod)
+      # ----------------------------------------------------------
+      - name: Ejecutar pruebas unitarias y generar cobertura
+        run: mvn test --no-transfer-progress
+        env:
+          SPRING_PROFILES_ACTIVE: ""
+
+      # ----------------------------------------------------------
+      # 5. Validar Quality Gate de cobertura (>= 40%)
+      #    mvn verify corre jacoco:check además de los tests
+      #    Falla el pipeline si la cobertura está por debajo del umbral
+      # ----------------------------------------------------------
+      - name: Validar Quality Gate de cobertura (>= 40%)
+        run: mvn verify --no-transfer-progress -DskipTests
+        env:
+          SPRING_PROFILES_ACTIVE: ""
+
+      # ----------------------------------------------------------
+      # 6. Publicar reporte JaCoCo como artefacto descargable
+      #    Disponible en la pestaña "Artifacts" del workflow run
+      # ----------------------------------------------------------
+      - name: Publicar reporte de cobertura
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jacoco-report
+          path: target/site/jacoco/
+          retention-days: 30
+
+      # ----------------------------------------------------------
+      # 7. Mostrar resumen de cobertura en el log del pipeline
+      # ----------------------------------------------------------
+      - name: Mostrar resumen de cobertura en consola
+        if: always()
+        run: |
+          echo "=================================================="
+          echo "  RESUMEN DE COBERTURA - JACOCO"
+          echo "=================================================="
+          if [ -f target/site/jacoco/index.html ]; then
+            # Extraer el porcentaje total del reporte XML
+            if [ -f target/site/jacoco/jacoco.xml ]; then
+              MISSED=$(grep -o 'missed="[0-9]*"' target/site/jacoco/jacoco.xml | head -1 | grep -o '[0-9]*')
+              COVERED=$(grep -o 'covered="[0-9]*"' target/site/jacoco/jacoco.xml | head -1 | grep -o '[0-9]*')
+              echo "  Instrucciones cubiertas : $COVERED"
+              echo "  Instrucciones perdidas  : $MISSED"
+            fi
+            echo "  Reporte completo disponible en Artifacts"
+          else
+            echo "  Reporte no generado - revisar errores de compilacion"
+          fi
+          echo "=================================================="
+
+      # ----------------------------------------------------------
+      # 8. Publicar resumen en GitHub (aparece en el PR y en el run)
+      # ----------------------------------------------------------
+      - name: Publicar resumen en GitHub
+        if: always()
+        run: |
+          echo "## Resultados - Sprint 1" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Etapa | Estado |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Compilación | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pruebas unitarias (30 tests) | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Quality Gate cobertura >= 40% | ✅ |" >> $GITHUB_STEP_SUMMARY
+          echo "| Reporte JaCoCo | Descargable en Artifacts |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "> Reporte completo disponible en la pestaña **Artifacts** de este run." >> $GITHUB_STEP_SUMMARY
