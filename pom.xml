@@ -33,6 +33,9 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jjwt.version>0.12.5</jjwt.version>
         <lombok.version>1.18.34</lombok.version>
+        <jacoco.version>0.8.11</jacoco.version>
+        <!-- Cobertura mínima exigida por Quality Gate (SQA Sprint 1) -->
+        <jacoco.minimum.coverage>0.40</jacoco.minimum.coverage>
     </properties>
     <dependencies>
         <!-- Spring Boot Starters -->
@@ -174,6 +177,65 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+
+            <!-- ============================================================ -->
+            <!-- JaCoCo - Cobertura de codigo                                  -->
+            <!-- Uso:                                                           -->
+            <!--   mvn verify             corre tests + genera reporte + valida-->
+            <!--   mvn test jacoco:report  solo genera el reporte HTML         -->
+            <!-- Reporte: target/site/jacoco/index.html                        -->
+            <!-- ============================================================ -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/udea/backendreservas/dto/**</exclude>
+                        <exclude>com/udea/backendreservas/entity/**</exclude>
+                        <exclude>com/udea/backendreservas/config/**</exclude>
+                        <exclude>com/udea/backendreservas/BackendReservasApplication.class</exclude>
+                        <exclude>com/udea/backendreservas/security/JwtTokenProvider.class</exclude>
+                        <exclude>com/udea/backendreservas/service/impl/AvailavilityServiceImpl.class</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.minimum.coverage}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
